@@ -1,0 +1,23 @@
+{% extends 'common/base.html' %}
+{% block page_content %}
+
+    <ul>
+    <li>
+        first name: {{ object.first_name }}
+    </li>
+    <li>
+        last name: {{ object.last_name }}
+    </li>
+    <li>
+        email: {{ object.user.email }}
+    </li>
+    <li>
+        phone: {{ object.phone_number }}
+    </li>
+    </ul>
+    <div>
+    <a href="{% url 'edit profile' object.user.pk %}">Edit</a>
+    <a href="{% url 'delete profile' object.user.pk %}">Delete</a>
+    </div>
+
+{% endblock %}

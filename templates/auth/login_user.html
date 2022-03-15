@@ -1,0 +1,10 @@
+{% extends 'common/base.html' %}
+{% block page_content %}
+
+<form action="{% url 'login user' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button>Login</button>
+</form>
+
+{% endblock %}

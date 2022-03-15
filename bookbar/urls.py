@@ -16,7 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from bookbar.profiles.views import show_home
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('bookbar.auth_app.urls')),
+    path('auth/', include('bookbar.auth_app.urls')),
+    path('profile/', include('bookbar.profiles.urls')),
+    path('', show_home, name='index'),
 ]
