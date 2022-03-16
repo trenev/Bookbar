@@ -12,10 +12,10 @@ from django.contrib.auth import forms as auth_forms
 #         def save(self, commit=True):
 #             user = super().save(commit=commit)
 #
-#             profile = Profile(
+#             profiles = Profile(
 #                 user=user,
 #             )
 #             if commit:
-#                 profile.save()
+#                 profiles.save()
 #
 #             return user

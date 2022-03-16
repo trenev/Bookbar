@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='profile',
+            model_name='profiles',
             name='phone_number',
             field=models.CharField(blank=True, max_length=16, null=True, unique=True, validators=[django.core.validators.RegexValidator(message='Phone number must not consist of space and requires country code. eg : +6591258565', regex='^(\\+\\d{1,3})?,?\\s?\\d{8,13}')]),
         ),

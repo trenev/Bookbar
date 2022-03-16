@@ -15,9 +15,5 @@
         phone: {{ object.phone_number }}
     </li>
     </ul>
-    <div>
-    <a href="{% url 'edit profile' object.user.pk %}">Edit</a>
-    <a href="{% url 'delete profile' object.user.pk %}">Delete</a>
-    </div>
 
 {% endblock %}

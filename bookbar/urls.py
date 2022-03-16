@@ -21,6 +21,6 @@ from bookbar.profiles.views import show_home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('bookbar.auth_app.urls')),
-    path('profile/', include('bookbar.profiles.urls')),
+    path('profiles/', include('bookbar.profiles.urls')),
     path('', show_home, name='index'),
 ]
