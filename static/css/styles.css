@@ -1,0 +1,27 @@
+div.col {
+    max-width: 220px;
+}
+
+.container {
+    background-color: bisque;
+    margin-top: 50px;
+    padding-left: 50px;
+    max-width: 1200px;
+}
+
+.card-bottom {
+    display: inline-block;
+}
+
+.card-bottom:first-child {
+    margin-left: 5px;
+}
+
+.card-bottom:last-child {
+    margin-left: 70px;
+    margin-bottom: 10px;
+}
+
+#cart-image {
+    width: 35px;
+}

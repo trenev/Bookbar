@@ -5,13 +5,6 @@ from django.views import generic as views
 from bookbar.profiles.models import Profile
 
 
-def show_home(request):
-    context = {
-        'title': 'it works'
-    }
-    return render(request, 'common/index.html', context)
-
-
 class ProfileDetailsView(views.DetailView):
     model = Profile
     template_name = 'profiles/profile_details.html'
@@ -25,9 +18,6 @@ class EditProfileView(views.UpdateView):
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse('profile details', kwargs={'pk': pk})
-
-    # template_name = 'profiles/edit_profile.html'
-    # form_class = ProfileEditForm
 
 
 class DeleteProfileView(views.DeleteView):

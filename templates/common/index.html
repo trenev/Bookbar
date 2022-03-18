@@ -1,6 +1,32 @@
 {% extends 'common/base.html' %}
 {% block page_content %}
+    {% load static %}
 
-    <h1>Welcome</h1>
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-left: auto">
+            {% for book in object_list %}
+                <div class="col">
+                    <div class="card h-100">
+                        <a href="{% url 'book details' book.pk %}">
+                            <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Cover">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title}}</h5>
+                            <p class="card-text">{{ book.author}}</p>
+                        </div>
+                        <div>
+                            <div class="card-bottom"><h5 class="text-muted">$ {{ book.price|floatformat:2}}</h5></div>
+                            <div class="card-bottom"><a href="">
+                                <img id="cart-image" src="{% static 'images/cart.png' %}" class="" alt="Cart">
+                            </a></div>
+
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
 {% endblock %}
+

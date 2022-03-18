@@ -7,3 +7,5 @@ urlpatterns = (
     path('edit/<int:pk>', EditProfileView.as_view(), name='edit profile'),
     path('delete/<int:pk>', DeleteProfileView.as_view(), name='delete profile'),
 )
+
+import bookbar.profiles.signals
