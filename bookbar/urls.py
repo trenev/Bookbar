@@ -11,4 +11,5 @@ urlpatterns = [
     path('auth/', include('bookbar.auth_app.urls')),
     path('profile/', include('bookbar.profiles.urls')),
     path('book/', include('bookbar.books.urls')),
+    path('order/', include('bookbar.orders.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

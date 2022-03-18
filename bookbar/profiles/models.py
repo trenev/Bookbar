@@ -3,9 +3,10 @@ from django.db import models
 
 from bookbar.auth_app.models import AppUser
 from bookbar.books.validators import validate_only_letters
+from bookbar.orders.models import SoftDeletionModel
 
 
-class Profile(models.Model):
+class Profile(SoftDeletionModel):
     FIRST_NAME_MAX_LENGTH = 20
     LAST_NAME_MAX_LENGTH = 20
 
@@ -45,3 +46,4 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+

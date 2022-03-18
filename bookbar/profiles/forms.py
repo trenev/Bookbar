@@ -1,5 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth import forms as auth_forms
+from django import forms
+
+from bookbar.profiles.models import Profile
+
+UserModel = get_user_model()
+
 
 # UserModel = get_user_model()
 #

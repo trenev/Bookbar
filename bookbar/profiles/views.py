@@ -28,3 +28,4 @@ class DeleteProfileView(views.DeleteView):
     def form_valid(self, form):
         self.request.user.delete()
         return super().form_valid(form)
+

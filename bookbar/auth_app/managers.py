@@ -1,5 +1,6 @@
 from django.contrib.auth import base_user
 from django.contrib.auth.hashers import make_password
+from django.db import models
 
 
 class AppUsersManager(base_user.BaseUserManager):
@@ -27,3 +28,4 @@ class AppUsersManager(base_user.BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(email, password, **extra_fields)
+

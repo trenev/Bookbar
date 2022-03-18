@@ -24,13 +24,21 @@ class UserRegistrationView(views.CreateView):
 class UserLoginView(auth_views.LoginView):
     template_name = 'auth/login_user.html'
 
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        user_email = form.cleaned_data['username']
+
+        if UserModel.objects.get(email=user_email).deleted_at:
+            logout(self.request)
+
+        return result
+
     def get_success_url(self):
-        return reverse_lazy('index')
+        # if not self.request.user.profile.deleted_at:
+        return reverse('index')
 
 
 def logout_user(request):
     logout(request)
     return redirect('index')
-
-
 

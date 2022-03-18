@@ -1,9 +1,10 @@
 from django.db import models
 
 from bookbar.books.validators import MaxFileSizeInMBValidator
+from bookbar.orders.models import SoftDeletionModel
 
 
-class Category(models.Model):
+class Category(SoftDeletionModel):
     CATEGORY_NAME_MAX_LENGTH = 30
 
     category_name = models.CharField(
@@ -14,7 +15,7 @@ class Category(models.Model):
         return f'{self.category_name}'
 
 
-class Book(models.Model):
+class Book(SoftDeletionModel):
     TITLE_MAX_LENGTH = 50
     AUTHOR_MAX_LENGTH = 50
 

@@ -42,6 +42,7 @@ PROJECT_APPS = (
     'bookbar.auth_app',
     'bookbar.profiles',
     'bookbar.books',
+    'bookbar.orders',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
