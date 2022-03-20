@@ -1,8 +1,8 @@
 from django.contrib.auth import models as auth_models
 from django.db import models
 
-from bookbar.auth_app.managers import AppUsersManager
-from bookbar.orders.models import SoftDeletionModel
+from bookbar.common.managers import AppUsersManager
+from bookbar.common.models import SoftDeletionModel
 
 
 class AppUser(auth_models.AbstractBaseUser, auth_models.PermissionsMixin, SoftDeletionModel):

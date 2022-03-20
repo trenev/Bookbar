@@ -34,8 +34,19 @@ class UserLoginView(auth_views.LoginView):
         return result
 
     def get_success_url(self):
-        # if not self.request.user.profile.deleted_at:
         return reverse('index')
+
+
+class ChangeUserEmailView(views.UpdateView):
+    model = UserModel
+    template_name = 'auth/change_email.html'
+    fields = ['email']
+    success_url = reverse_lazy('index')
+
+
+class ChangeUserPasswordView(auth_views.PasswordChangeView):
+    template_name = 'auth/change_password.html'
+    success_url = reverse_lazy('index')
 
 
 def logout_user(request):

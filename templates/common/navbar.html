@@ -47,7 +47,7 @@
                     <a class="nav-link" href="#">Add Book</a>
                 </li>
         </div>
-        <div>
+        <div id="dropdown-position">
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     {% if not request.user.is_authenticated %}
@@ -73,8 +73,10 @@
                                         Edit Profile</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'delete profile' request.user.pk %}">
-                                        Delete Profile</a>
+                                    <a class="dropdown-item" href="{% url 'change email' request.user.pk %}">Change Email</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'change password' %}">Change Password</a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{% url 'logout user' %}">Logout</a>
@@ -88,7 +90,6 @@
 
     </div>
 </nav>
-
 
 {#<div class="nav justify-content-end">#}
 {#</div>#}

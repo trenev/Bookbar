@@ -1,19 +1,17 @@
 {% extends 'common/base.html' %}
 {% block page_content %}
 
-    <ul>
-    <li>
-        first name: {{ object.first_name }}
-    </li>
-    <li>
-        last name: {{ object.last_name }}
-    </li>
-    <li>
-        email: {{ object.user.email }}
-    </li>
-    <li>
-        phone: {{ object.phone_number }}
-    </li>
-    </ul>
+    <div class="card" id="profile-details">
+        <h5 class="card-header">Profile Details</h5>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">First Name: <span id="firstname">{{ object.first_name }}</span></li>
+            <li class="list-group-item">Last Name: <span id="lastname">{{ object.last_name }}</span></li>
+            <li class="list-group-item">Email: <span id="profile-email">{{ object.user.email }}</span></li>
+            <li class="list-group-item">Phone: <span id="profile-phone">{{ object.phone_number }}</span></li>
+        </ul>
+        <div class="card-body">
+            <a href="{% url 'delete profile' request.user.pk %}" class="btn btn-danger">Delete Profile</a>
+        </div>
+    </div>
 
 {% endblock %}

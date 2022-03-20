@@ -1,7 +1,7 @@
 from django.db import models
 
-from bookbar.books.validators import MaxFileSizeInMBValidator
-from bookbar.orders.models import SoftDeletionModel
+from bookbar.common.validators import MaxFileSizeInMBValidator
+from bookbar.common.models import SoftDeletionModel
 
 
 class Category(SoftDeletionModel):

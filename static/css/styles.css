@@ -25,3 +25,28 @@ div.col {
 #cart-image {
     width: 35px;
 }
+
+#dropdown-position {
+    margin-right: 25px;
+}
+
+#profile-details {
+    width: 600px;
+    margin: 50px 400px 75px;
+}
+
+#firstname {
+    margin-left: 30px;
+}
+
+#lastname {
+    margin-left: 30px;
+}
+
+#profile-email {
+    margin-left: 67px;
+}
+
+#profile-phone {
+    margin-left: 58px;
+}

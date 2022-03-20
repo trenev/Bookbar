@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
@@ -23,9 +24,12 @@ class EditProfileView(views.UpdateView):
 class DeleteProfileView(views.DeleteView):
     model = Profile
     template_name = 'profiles/delete_profile.html'
-    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
         self.request.user.delete()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        logout(self.request)
+        return reverse('index')
 

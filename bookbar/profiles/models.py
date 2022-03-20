@@ -2,8 +2,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 from bookbar.auth_app.models import AppUser
-from bookbar.books.validators import validate_only_letters
-from bookbar.orders.models import SoftDeletionModel
+from bookbar.common.validators import validate_only_letters
+from bookbar.common.models import SoftDeletionModel
 
 
 class Profile(SoftDeletionModel):
