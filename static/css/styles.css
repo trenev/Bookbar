@@ -5,6 +5,7 @@ div.col {
 .container {
     background-color: bisque;
     margin-top: 50px;
+    margin-bottom: 50px;
     padding-left: 50px;
     max-width: 1200px;
 }
@@ -14,12 +15,17 @@ div.col {
 }
 
 .card-bottom:first-child {
+    width: 120px;
     margin-left: 5px;
 }
 
 .card-bottom:last-child {
-    margin-left: 70px;
-    margin-bottom: 10px;
+    width: 50px;
+    margin-bottom: 5px;
+}
+
+a.disabled {
+    padding: 0px 0px 0px 0px;
 }
 
 #cart-image {
@@ -49,4 +55,10 @@ div.col {
 
 #profile-phone {
     margin-left: 58px;
+}
+
+.pagination {
+    width: 400px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }

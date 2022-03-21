@@ -1,0 +1,11 @@
+{% extends 'common/base.html' %}
+{% block page_content %}
+
+<form action="{% url 'add book' %}" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form }}
+<button>Add</button>
+</form>
+
+
+{% endblock %}

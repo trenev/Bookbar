@@ -30,7 +30,7 @@ class Book(SoftDeletionModel):
         max_length=AUTHOR_MAX_LENGTH,
     )
 
-    description = models.TextField()
+    annotation = models.TextField()
 
     cover_image = models.ImageField(
         validators=(

@@ -11,22 +11,46 @@
                             <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Cover">
                         </a>
                         <div class="card-body">
-                            <h5 class="card-title">{{ book.title}}</h5>
-                            <p class="card-text">{{ book.author}}</p>
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">{{ book.author }}</p>
                         </div>
                         <div>
-                            <div class="card-bottom"><h5 class="text-muted">$ {{ book.price|floatformat:2}}</h5></div>
-                            <div class="card-bottom"><a href="">
-                                <img id="cart-image" src="{% static 'images/cart.png' %}" class="" alt="Cart">
-                            </a></div>
-
-
+                            <div class="card-bottom"><h5 class="text-muted">${{ book.price|floatformat:2 }}</h5></div>
+                            {% if book.quantity > 0 %}
+                                <div class="card-bottom"><a href="">
+                                    <img id="cart-image" src="{% static 'images/cart.png' %}" alt="Cart"></a>
+                                </div>
+                            {% else %}
+                                <div class="card-bottom"><a class="btn disabled" href="">
+                                    <img id="cart-image" src="{% static 'images/cart.png' %}" alt="Cart"></a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
     </div>
+
+
+    
 
 {% endblock %}
 
