@@ -1,9 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
 
 from bookbar.auth_app.models import AppUser
 from bookbar.common.validators import validate_only_letters
 from bookbar.common.models import SoftDeletionModel
+
+UserModel = get_user_model()
 
 
 class Profile(SoftDeletionModel):
@@ -42,7 +45,7 @@ class Profile(SoftDeletionModel):
     )
 
     user = models.OneToOneField(
-        AppUser,
+        UserModel,
         on_delete=models.CASCADE,
         primary_key=True,
     )

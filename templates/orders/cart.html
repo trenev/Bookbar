@@ -1,0 +1,72 @@
+{% extends 'common/base.html' %}
+{% block page_content %}
+
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in ordered_books %}
+                    <tr>
+                        <td>
+                            <div class="media">
+                                <div>
+                                    <img class="media-image" src="{{ item.book.cover_image.url }}"
+                                         alt="Book Cover">
+                                </div>
+                                <div class="media-body">
+                                    <p>{{ item.book.title }}</p>
+                                    <p>by <span>{{ item.book.author }}</span></p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <h5>${{ item.book.price|floatformat:2 }}</h5>
+                        </td>
+                        <td>
+                            <h5>{{ item.quantity }}</h5>
+                        </td>
+                        <td>
+                            <h5>${{ item.get_price|floatformat:2 }}</h5>
+                        </td>
+                        <td>
+                            <a href="{% url 'remove from cart' item.pk %}">
+                                <button class="close-btn">&#x2715</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td colspan="2">
+                        <h5>Subtotal:</h5>
+                    </td>
+                    <td>
+                        <h5>${{ order.get_total_price|floatformat:2 }}</h5>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-light" href="{% url 'index' %}">Continue Shopping</a>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2">
+                        <a class="btn btn-warning" href="{% url 'finish order' order.pk %}">Finish Order</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+{% endblock %}

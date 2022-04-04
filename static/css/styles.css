@@ -62,3 +62,28 @@ a.disabled {
     margin-top: 30px;
     margin-bottom: 30px;
 }
+
+.media {
+    display: flex;
+}
+
+.media-image {
+    margin-right: 35px;
+    max-width: 100px;
+}
+
+.media-body p:first-child {
+    font-size: 23px;
+}
+
+.media-body p:nth-child(2) {
+    font-size: 18px;
+}
+
+.media-body p:nth-child(2) span {
+    color: dimgray;
+}
+
+.close-btn {
+    border-radius: 50%;
+}

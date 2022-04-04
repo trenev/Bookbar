@@ -54,3 +54,6 @@ class Book(SoftDeletionModel):
 
     class Meta:
         ordering = ['-date_added']
+
+    def __str__(self):
+        return f'{self.title}'

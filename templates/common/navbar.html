@@ -46,6 +46,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'add book' %}">Add Book</a>
                 </li>
+            </ul>
         </div>
         <div id="dropdown-position">
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -58,6 +59,9 @@
                             <a class="nav-link" href="{% url 'register user' %}">Register</a>
                         </li>
                     {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'order details' request.user.pk %}">My Cart</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
@@ -73,7 +77,8 @@
                                         Edit Profile</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'change email' request.user.pk %}">Change Email</a>
+                                    <a class="dropdown-item" href="{% url 'change email' request.user.pk %}">Change
+                                        Email</a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{% url 'change password' %}">Change Password</a>
