@@ -87,13 +87,24 @@ WSGI_APPLICATION = 'bookbar.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bookbar_db',
-        'USER': 'db_admin',
-        'PASSWORD': 'zxcv159',
-        'HOST': '127.0.0.1',
+        'NAME': 'd6vh7lss97qk9j',
+        'USER': 'grbzomfzbizpwx',
+        'PASSWORD': 'fe6ac08fa96f479b4c26537113d931577a0ce9610369b3c86281ebb42f9aeb66',
+        'HOST': 'ec2-99-80-170-190.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'bookbar_db',
+#         'USER': 'db_admin',
+#         'PASSWORD': 'zxcv159',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
