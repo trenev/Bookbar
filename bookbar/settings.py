@@ -51,6 +51,7 @@ PROJECT_APPS = (
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,10 +88,10 @@ WSGI_APPLICATION = 'bookbar.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd6vh7lss97qk9j',
-        'USER': 'grbzomfzbizpwx',
-        'PASSWORD': 'fe6ac08fa96f479b4c26537113d931577a0ce9610369b3c86281ebb42f9aeb66',
-        'HOST': 'ec2-99-80-170-190.eu-west-1.compute.amazonaws.com',
+        'NAME': 'dff29almoo164e',
+        'USER': 'ctjhyagbrujqfs',
+        'PASSWORD': 'f517c1ee2d2c2571e99ae111881d579fb21b4aeeb9761362dd0fd7c7d9b89631',
+        'HOST': 'ec2-52-212-228-71.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -144,6 +145,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
