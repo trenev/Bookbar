@@ -1,3 +1,4 @@
+from cloudinary import models as cloudinary_models
 from django.db import models
 
 from bookbar.common.validators import MaxFileSizeInMBValidator
@@ -32,12 +33,14 @@ class Book(SoftDeletionModel):
 
     annotation = models.TextField()
 
-    cover_image = models.ImageField(
-        validators=(
-            MaxFileSizeInMBValidator(IMAGE_MAX_SIZE_IN_MB),
-        ),
-        upload_to=IMAGE_UPLOAD_TO_DIR,
-    )
+    cover_image = cloudinary_models.CloudinaryField('image')
+
+    # cover_image = models.ImageField(
+    #     validators=(
+    #         MaxFileSizeInMBValidator(IMAGE_MAX_SIZE_IN_MB),
+    #     ),
+    #     upload_to=IMAGE_UPLOAD_TO_DIR,
+    # )
 
     quantity = models.IntegerField()
 

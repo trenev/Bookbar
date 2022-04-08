@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import cloudinary
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -39,7 +41,9 @@ DJANGO_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 )
-THIRD_PARTY_APPS = ()
+THIRD_PARTY_APPS = (
+    'cloudinary',
+)
 
 PROJECT_APPS = (
     'bookbar.auth_app',
@@ -178,3 +182,9 @@ LOGGING = {
         }
     }
 }
+
+cloudinary.config(
+    cloud_name="dhwy8ht0a",
+    api_key="798315455938475",
+    api_secret="-IJJDfrVhN2bRNfYg9G9ZU56Qqk"
+)
