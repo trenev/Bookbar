@@ -6,4 +6,4 @@ class ProfilesConfig(AppConfig):
     name = 'bookbar.profiles'
 
     def ready(self):
-        pass
+        import bookbar.common.signals
