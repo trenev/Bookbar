@@ -11,10 +11,16 @@ class UserRegistrationForm(BootstrapFormControlMixin, auth_forms.UserCreationFor
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._init_bootstrap_form_controls()
+        self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
 
     class Meta:
         model = UserModel
         fields = ['email', ]
 
+
+class UserLoginForm(BootstrapFormControlMixin, auth_forms.AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._init_bootstrap_form_controls()
 

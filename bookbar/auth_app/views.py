@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
-from bookbar.auth_app.forms import UserRegistrationForm
+from bookbar.auth_app.forms import UserRegistrationForm, UserLoginForm
 
 UserModel = get_user_model()
 
@@ -23,6 +23,7 @@ class UserRegistrationView(views.CreateView):
 
 class UserLoginView(auth_views.LoginView):
     template_name = 'auth/login_user.html'
+    form_class = UserLoginForm
 
     def form_valid(self, form):
         result = super().form_valid(form)
@@ -30,6 +31,7 @@ class UserLoginView(auth_views.LoginView):
 
         if UserModel.objects.get(email=user_email).deleted_at:
             logout(self.request)
+            return redirect('register user')
 
         return result
 
