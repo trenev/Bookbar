@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
-from bookbar.auth_app.forms import UserRegistrationForm, UserLoginForm
+from bookbar.auth_app.forms import UserRegistrationForm, UserLoginForm, ChangeUserEmailForm, ChangeUserPasswordForm
 
 UserModel = get_user_model()
 
@@ -40,14 +40,15 @@ class UserLoginView(auth_views.LoginView):
 
 
 class ChangeUserEmailView(views.UpdateView):
-    model = UserModel
     template_name = 'auth/change_email.html'
-    fields = ['email']
+    model = UserModel
+    form_class = ChangeUserEmailForm
     success_url = reverse_lazy('index')
 
 
 class ChangeUserPasswordView(auth_views.PasswordChangeView):
     template_name = 'auth/change_password.html'
+    form_class = ChangeUserPasswordForm
     success_url = reverse_lazy('index')
 
 

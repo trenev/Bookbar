@@ -24,3 +24,18 @@ class UserLoginForm(BootstrapFormControlMixin, auth_forms.AuthenticationForm):
         super().__init__(*args, **kwargs)
         self._init_bootstrap_form_controls()
 
+
+class ChangeUserEmailForm(BootstrapFormControlMixin, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._init_bootstrap_form_controls()
+
+    class Meta:
+        model = UserModel
+        fields = ['email', ]
+
+
+class ChangeUserPasswordForm(BootstrapFormControlMixin, auth_forms.PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._init_bootstrap_form_controls()
