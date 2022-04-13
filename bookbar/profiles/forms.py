@@ -1,13 +1,16 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth import forms as auth_forms
 from django import forms
 
+from bookbar.common.mixins import BootstrapFormControlMixin
+from bookbar.profiles.models import Profile
 
-# UserModel = get_user_model()
-#
-#
-# class ProfileEditForm(auth_forms.UserChangeForm):
-#     class Meta:
-#         model = UserModel
-#         fields = ['email']
+
+class ProfileEditForm(BootstrapFormControlMixin, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._init_bootstrap_form_controls()
+
+    class Meta:
+        model = Profile
+        fields = ['first_name', 'last_name', 'phone_number']
 
