@@ -39,3 +39,4 @@ class ChangeUserPasswordForm(BootstrapFormControlMixin, auth_forms.PasswordChang
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._init_bootstrap_form_controls()
+        self.fields['new_password1'].help_text = None
