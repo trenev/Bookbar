@@ -1,5 +1,6 @@
+import re
+
 from django.contrib.auth import logout
-from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
@@ -10,6 +11,14 @@ from bookbar.profiles.models import Profile
 class ProfileDetailsView(views.DetailView):
     template_name = 'profiles/profile_details.html'
     model = Profile
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=pk)
+        phone_number = re.sub(r'(\d{3})(\d{3})(\d{3})(\d{3})', r'(\1) \2-\3-\4', profile.phone_number)
+        data['phone_number'] = phone_number
+        return data
 
 
 class EditProfileView(views.UpdateView):
@@ -33,4 +42,3 @@ class DeleteProfileView(views.DeleteView):
     def get_success_url(self):
         logout(self.request)
         return reverse('index')
-
