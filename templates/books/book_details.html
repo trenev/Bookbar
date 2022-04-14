@@ -1,10 +1,6 @@
 {% extends 'common/base.html' %}
 {% block page_content %}
 
-    <a href="{% url 'edit book' book.pk %}">Edit</a>
-    <a href="{% url 'delete book' book.pk %}">Delete</a>
-
-
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -21,12 +17,20 @@
                             <div>
                                 {% if object.quantity > 0 %}
                                     <h6>Availability: In Stock</h6>
-                                    <a class="btn btn-warning" href="">Add to Cart </a>
+                                    {% if not request.user.is_staff %}
+                                        <a class="btn btn-warning" href="{% url 'add to cart' object.pk %}">Add to
+                                            Cart </a>
+                                    {% endif %}
                                 {% else %}
                                     <h6>Availability: Out of Stock</h6>
                                 {% endif %}
                             </div>
-
+                            <div>
+                                {% if request.user.is_staff %}
+                                    <a class="btn btn-warning" href="{% url 'edit book' object.pk %}">Edit</a>
+                                    <a class="btn btn-danger" href="{% url 'delete book' object.pk %}">Delete</a>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

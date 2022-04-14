@@ -60,3 +60,4 @@ class Book(SoftDeletionModel):
 
     def __str__(self):
         return f'{self.title}'
+

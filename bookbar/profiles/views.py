@@ -16,8 +16,12 @@ class ProfileDetailsView(views.DetailView):
         data = super().get_context_data(**kwargs)
         pk = self.kwargs['pk']
         profile = Profile.objects.get(pk=pk)
-        phone_number = re.sub(r'(\d{3})(\d{3})(\d{3})(\d{3})', r'(\1) \2-\3-\4', profile.phone_number)
-        data['phone_number'] = phone_number
+
+        formatted_phone_number = ''
+        if profile.phone_number:
+            formatted_phone_number = re.sub(r'(\d{3})(\d{3})(\d{3})(\d{3})', r'(\1) \2-\3-\4', profile.phone_number)
+
+        data['phone_number'] = formatted_phone_number
         return data
 
 

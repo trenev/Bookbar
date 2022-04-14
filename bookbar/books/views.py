@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
-from bookbar.books.forms import CreateBookForm
+from bookbar.books.forms import CreateBookForm, EditBookForm
 from bookbar.books.models import Book
 
 
@@ -27,7 +27,11 @@ class AddBookView(views.CreateView):
 class EditBookView(views.UpdateView):
     template_name = 'books/edit_book.html'
     model = Book
-    fields = '__all__'
+    form_class = EditBookForm
+
+    def get_success_url(self):
+        pk = self.kwargs['pk']
+        return reverse('book details', kwargs={'pk': pk})
 
 
 class DeleteBookView(views.DeleteView):
