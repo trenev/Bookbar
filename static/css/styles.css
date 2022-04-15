@@ -1,16 +1,43 @@
-div.col {
-    max-width: 220px;
-}
-
+/*Home page*/
 .container {
     margin-top: 50px;
     margin-bottom: 50px;
-    padding-left: 50px;
+    padding-left: 10px;
     max-width: 1200px;
+}
+
+.col {
+    max-width: 220px;
+}
+
+#categories {
+    width: 250px;
+}
+
+#categories > h5 {
+    font-weight: bold;
+    color: navy;
+}
+
+.list-group-item {
+    color: dimgray;
+}
+
+#books {
+    max-width: 950px;
 }
 
 .card-bottom {
     display: inline-block;
+}
+
+.card-title {
+    font-size: 18px;
+}
+
+.card-text {
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .card-bottom:first-child {
@@ -31,10 +58,22 @@ a.disabled {
     width: 35px;
 }
 
+#book-hover:hover {
+    background-color: #eee;
+}
+
+.pagination {
+    width: 400px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/*Navbar*/
 #dropdown-position {
     margin-right: 25px;
 }
 
+/*Profile details*/
 #profile-details {
     width: 600px;
     margin: 50px 400px 75px;
@@ -56,12 +95,7 @@ a.disabled {
     margin-left: 58px;
 }
 
-.pagination {
-    width: 400px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-
+/*Cart*/
 .media {
     display: flex;
 }
@@ -85,4 +119,15 @@ a.disabled {
 
 .close-btn {
     border-radius: 50%;
+}
+
+/*Book details*/
+#in-stock {
+    color: green;
+    font-weight: bold;
+}
+
+#out-of-stock {
+    color: red;
+    font-weight: bold;
 }

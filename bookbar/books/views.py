@@ -1,16 +1,19 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
 from bookbar.books.forms import CreateBookForm, EditBookForm
-from bookbar.books.models import Book
+from bookbar.books.models import Book, Category
 
 
 class IndexView(views.ListView):
     template_name = 'common/index.html'
     model = Book
-    paginate_by = 10
+    paginate_by = 8
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['categories'] = Category.objects.all()
+        return data
 
 class BookDetailView(views.DetailView):
     template_name = 'books/book_details.html'

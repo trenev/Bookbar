@@ -12,6 +12,9 @@ class Category(SoftDeletionModel):
         max_length=CATEGORY_NAME_MAX_LENGTH,
     )
 
+    class Meta:
+        ordering = ['category_name']
+
     def __str__(self):
         return f'{self.category_name}'
 
