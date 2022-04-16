@@ -1,3 +1,7 @@
+from django.contrib.auth import mixins
+from django.shortcuts import redirect
+
+
 class BootstrapFormControlMixin:
     fields = {}
 
@@ -9,3 +13,19 @@ class BootstrapFormControlMixin:
                 field.widget.attrs['class'] = ''
 
             field.widget.attrs['class'] += 'form-control'
+
+
+class BookAccessMixin(mixins.PermissionRequiredMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permission():
+            return redirect('error')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class UserAccessMixin(mixins.LoginRequiredMixin):
+    kwargs = {}
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.pk == self.kwargs['pk']:
+            return redirect('error')
+        return super().dispatch(request, *args, **kwargs)

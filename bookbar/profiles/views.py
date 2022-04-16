@@ -1,14 +1,15 @@
 import re
 
 from django.contrib.auth import logout
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.views import generic as views
 
+from bookbar.common.mixins import UserAccessMixin
 from bookbar.profiles.forms import ProfileEditForm
 from bookbar.profiles.models import Profile
 
 
-class ProfileDetailsView(views.DetailView):
+class ProfileDetailsView(UserAccessMixin, views.DetailView):
     template_name = 'profiles/profile_details.html'
     model = Profile
 
@@ -25,7 +26,7 @@ class ProfileDetailsView(views.DetailView):
         return data
 
 
-class EditProfileView(views.UpdateView):
+class EditProfileView(UserAccessMixin, views.UpdateView):
     template_name = 'profiles/edit_profile.html'
     model = Profile
     form_class = ProfileEditForm
@@ -35,7 +36,7 @@ class EditProfileView(views.UpdateView):
         return reverse('profile details', kwargs={'pk': pk})
 
 
-class DeleteProfileView(views.DeleteView):
+class DeleteProfileView(UserAccessMixin, views.DeleteView):
     template_name = 'profiles/delete_profile.html'
     model = Profile
 

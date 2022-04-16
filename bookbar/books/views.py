@@ -1,8 +1,10 @@
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
 from bookbar.books.forms import CreateBookForm, EditBookForm
 from bookbar.books.models import Book, Category
+from bookbar.common.mixins import BookAccessMixin
 
 
 class IndexView(views.ListView):
@@ -15,19 +17,24 @@ class IndexView(views.ListView):
         data['categories'] = Category.objects.all()
         return data
 
+
 class BookDetailView(views.DetailView):
     template_name = 'books/book_details.html'
     model = Book
 
 
-class AddBookView(views.CreateView):
+class AddBookView(BookAccessMixin, views.CreateView):
+    permission_required = 'books.add_book'
+
     template_name = 'books/add_book.html'
     model = Book
     form_class = CreateBookForm
     success_url = reverse_lazy('index')
 
 
-class EditBookView(views.UpdateView):
+class EditBookView(BookAccessMixin, views.UpdateView):
+    permission_required = 'books.change_book'
+
     template_name = 'books/edit_book.html'
     model = Book
     form_class = EditBookForm
@@ -37,8 +44,13 @@ class EditBookView(views.UpdateView):
         return reverse('book details', kwargs={'pk': pk})
 
 
-class DeleteBookView(views.DeleteView):
+class DeleteBookView(BookAccessMixin, views.DeleteView):
+    permission_required = 'books.delete_book'
+
     template_name = 'books/delete_book.html'
     model = Book
     success_url = reverse_lazy('index')
 
+
+def page_not_found_view(request):
+    return render(request, 'common/404.html', status=404)

@@ -5,6 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
 from bookbar.auth_app.forms import UserRegistrationForm, UserLoginForm, ChangeUserEmailForm, ChangeUserPasswordForm
+from bookbar.common.mixins import UserAccessMixin
 
 UserModel = get_user_model()
 
@@ -39,7 +40,7 @@ class UserLoginView(auth_views.LoginView):
         return reverse('index')
 
 
-class ChangeUserEmailView(views.UpdateView):
+class ChangeUserEmailView(UserAccessMixin, views.UpdateView):
     template_name = 'auth/change_email.html'
     model = UserModel
     form_class = ChangeUserEmailForm
