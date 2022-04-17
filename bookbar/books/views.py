@@ -10,12 +10,26 @@ from bookbar.common.mixins import BookAccessMixin
 class IndexView(views.ListView):
     template_name = 'common/index.html'
     model = Book
+    queryset = Book.objects.all()[:5]
+
+
+class BooksView(views.ListView):
+    template_name = 'books/books.html'
+    model = Book
     paginate_by = 8
 
     def get_context_data(self, *, object_list=None, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['categories'] = Category.objects.all()
+        data['category_list'] = Category.objects.all()
+        data['category'] = self.kwargs.get('category')
         return data
+
+    def get_queryset(self):
+        category = self.kwargs.get('category')
+        if category == 'all':
+            return Book.objects.all()
+
+        return Book.objects.filter(category__category_name__iexact=self.kwargs.get('category'))
 
 
 class BookDetailView(views.DetailView):
@@ -29,7 +43,7 @@ class AddBookView(BookAccessMixin, views.CreateView):
     template_name = 'books/add_book.html'
     model = Book
     form_class = CreateBookForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('show books')
 
 
 class EditBookView(BookAccessMixin, views.UpdateView):
@@ -49,7 +63,7 @@ class DeleteBookView(BookAccessMixin, views.DeleteView):
 
     template_name = 'books/delete_book.html'
     model = Book
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('show books')
 
 
 def page_not_found_view(request):

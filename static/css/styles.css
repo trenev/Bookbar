@@ -1,4 +1,34 @@
-/*Home page*/
+/*Site header*/
+.site-header {
+    background: linear-gradient(rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.6)),
+    url("/static/images/site-header.jpg") no-repeat center;
+    background-size: cover;
+}
+
+.site-header h1 {
+    margin: 0;
+    padding: 200px 0 20px 100px;
+    max-width: 450px;
+    color: white;
+    font-size: 60px;
+    letter-spacing: 2px;
+}
+
+.site-header h5 {
+    margin: 0;
+    padding: 0 0 120px 100px;
+    max-width: 500px;
+    color: white;
+    font-size: 25px;
+}
+
+.site-header span {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+/*Books on home page*/
 .container {
     margin-top: 50px;
     margin-bottom: 50px;
@@ -10,6 +40,7 @@
     max-width: 220px;
 }
 
+/*Books page*/
 #categories {
     width: 250px;
 }
@@ -21,6 +52,17 @@
 
 .list-group-item {
     color: dimgray;
+}
+
+#books-header {
+    margin-top: 20px;
+    margin-left: 85px;
+}
+
+#books-header a {
+    text-decoration: none;
+    color: dimgray;
+    font-size: 20px;
 }
 
 #books {
@@ -51,7 +93,7 @@
 }
 
 a.disabled {
-    padding: 0px 0px 0px 0px;
+    padding: 0 0 0 0;
 }
 
 #cart-image {
