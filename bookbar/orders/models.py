@@ -35,6 +35,9 @@ class OrderBook(models.Model):
 
 
 class Order(models.Model):
+    DISCOUNT_WHEN_MORE_THAN_ONE_BOOK = 10
+    MIN_BOOKS_COUNT_TO_APPLY_DISCOUNT = 2
+
     order_date = models.DateTimeField(
         auto_now_add=True,
     )
@@ -58,3 +61,14 @@ class Order(models.Model):
             result += book.get_price()
         return result
 
+    def get_books_count(self):
+        return sum([b.quantity for b in self.books.all()])
+
+    def get_discount(self):
+        result = 0
+        if self.get_books_count() >= self.MIN_BOOKS_COUNT_TO_APPLY_DISCOUNT:
+            result = self.get_total_price() * self.DISCOUNT_WHEN_MORE_THAN_ONE_BOOK / 100
+        return result
+
+    def get_final_price(self):
+        return self.get_total_price() - self.get_discount()

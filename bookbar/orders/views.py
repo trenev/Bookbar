@@ -22,6 +22,7 @@ class OrderDetailsView(mixins.LoginRequiredMixin, views.View):
             }
 
             return render(self.request, 'orders/cart.html', context)
+
         except exceptions.ObjectDoesNotExist:
             messages.warning(self.request, 'Your Cart is empty')
             return redirect('index')
@@ -45,10 +46,10 @@ def add_to_cart(request, pk):
         if order.books.filter(book__pk=book.pk).exists():
             order_book.quantity += 1
             order_book.save()
-            return redirect('index')
+            return redirect('show books', category='all')
         else:
             order.books.add(order_book)
-            return redirect('index')
+            return redirect('show books', category='all')
 
     else:
         order_date = timezone.now()
@@ -57,7 +58,7 @@ def add_to_cart(request, pk):
             order_date=order_date,
         )
         order.books.add(order_book)
-        return redirect('index')
+        return redirect('show books', category='all')
 
 
 @login_required

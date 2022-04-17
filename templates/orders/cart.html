@@ -44,18 +44,29 @@
                         </td>
                     </tr>
                 {% endfor %}
+                {% if order.get_discount > 0 %}
+                <tr>
+                    <td></td>
+                    <td colspan="2">
+                        <h5>Discount:</h5>
+                    </td>
+                    <td colspan="2">
+                        <h5>${{ order.get_discount|floatformat:2 }}</h5>
+                    </td>
+                </tr>
+                {% endif %}
                 <tr>
                     <td></td>
                     <td colspan="2">
                         <h5>Subtotal:</h5>
                     </td>
-                    <td>
-                        <h5>${{ order.get_total_price|floatformat:2 }}</h5>
+                    <td colspan="2">
+                        <h5>${{ order.get_final_price|floatformat:2 }}</h5>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <a class="btn btn-light" href="{% url 'index' %}">Continue Shopping</a>
+                        <a class="btn btn-light" href="{% url 'show books' category='all' %}">Continue Shopping</a>
                     </td>
                     <td></td>
                     <td></td>

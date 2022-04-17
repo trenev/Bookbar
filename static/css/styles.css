@@ -147,6 +147,10 @@ a.disabled {
     max-width: 100px;
 }
 
+.media-body {
+    max-width: 500px;
+}
+
 .media-body p:first-child {
     font-size: 23px;
 }
