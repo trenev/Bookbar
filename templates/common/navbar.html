@@ -1,3 +1,6 @@
+{% load static %}
+{% load user_order_books %}
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -7,11 +10,11 @@
         <div>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                        <a class="nav-link" href="{% url 'show books' category='all' %}">Books</a>
-                    </li>
+                    <a class="nav-link zzz" href="{% url 'show books' category='all' %}">Books</a>
+                </li>
                 {% if request.user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'add book' %}">Add Book</a>
@@ -31,13 +34,19 @@
                         </li>
                     {% else %}
                         {% if not request.user.is_staff %}
-                            <li>{{ request.user.order }}</li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'order details' request.user.pk %}">My Cart</a>
+                            <li id="bag-li">
+                                <a class="nav-link" href="{% url 'order details' request.user.pk %}">
+                                    <img id="bag-image" src="{% static 'images/shopping-bag.png' %}" alt="shopping-bag">
+                                    {% if request.user|count %}
+                                        <span id="bag-number">
+                                            {{ request.user|count }}
+                                        </span>
+                                    {% endif %}
+                                </a>
                             </li>
                         {% endif %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdownMenuLink" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Hello, {{ request.user }}
                             </a>

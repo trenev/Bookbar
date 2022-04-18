@@ -1,4 +1,5 @@
 {% extends 'common/base.html' %}
+{% load static %}
 {% block page_content %}
 
     <div class="container">
@@ -10,7 +11,7 @@
                     <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Total</th>
-                    <th scope="col">Delete</th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,28 +33,38 @@
                             <h5>${{ item.book.price|floatformat:2 }}</h5>
                         </td>
                         <td>
-                            <h5>{{ item.quantity }}</h5>
+                            <div style="width: 95px">
+                                <a class="cart-quantity" href="{% url 'remove from cart' item.pk %}">
+                                    <img id="bag-image" src="{% static 'images/icons8-minus-48.png' %}"
+                                         alt="shopping-bag">
+                                </a>
+                                <h5 class="cart-quantity">{{ item.quantity }}</h5>
+                                <a class="cart-quantity" href="{% url 'add to cart' item.book.pk %}">
+                                    <img id="bag-image" src="{% static 'images/icons8-plus-48.png' %}"
+                                         alt="shopping-bag">
+                                </a>
+                            </div>
                         </td>
                         <td>
                             <h5>${{ item.get_price|floatformat:2 }}</h5>
                         </td>
                         <td>
                             <a href="{% url 'remove from cart' item.pk %}">
-                                <button class="close-btn">&#x2715</button>
+                                <img id="bag-image" src="{% static 'images/icons8-cancel-50.png' %}" alt="shopping-bag">
                             </a>
                         </td>
                     </tr>
                 {% endfor %}
                 {% if order.get_discount > 0 %}
-                <tr>
-                    <td></td>
-                    <td colspan="2">
-                        <h5>Discount:</h5>
-                    </td>
-                    <td colspan="2">
-                        <h5>${{ order.get_discount|floatformat:2 }}</h5>
-                    </td>
-                </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="2">
+                            <h5>Discount:</h5>
+                        </td>
+                        <td colspan="2">
+                            <h5>${{ order.get_discount|floatformat:2 }}</h5>
+                        </td>
+                    </tr>
                 {% endif %}
                 <tr>
                     <td></td>

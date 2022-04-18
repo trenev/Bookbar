@@ -28,7 +28,52 @@
     font-size: 30px;
 }
 
-/*Books on home page*/
+/*Navbar*/
+#dropdown-position {
+    margin-right: 25px;
+}
+
+#bag-li {
+    position: absolute;
+    right: 250px;
+}
+
+#bag-image {
+    margin: 0 0 3px 0;
+    width: 20px;
+}
+
+#bag-number {
+    height: 15px;
+    width: 15px;
+    background: #7fad39;
+    font-size: 11px;
+    color: #ffffff;
+    line-height: 15px;
+    text-align: center;
+    font-weight: 700;
+    display: inline-block;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+}
+
+/*Home page books*/
+#home-title {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#home-books {
+    margin-top: 0;
+    padding-left: 55px;
+}
+
+/*Books*/
+.list-group-item {
+    color: #234465;
+}
+
 .container {
     margin-top: 50px;
     margin-bottom: 50px;
@@ -40,18 +85,13 @@
     max-width: 220px;
 }
 
-/*Books page*/
 #categories {
     width: 250px;
 }
 
 #categories > h5 {
     font-weight: bold;
-    color: navy;
-}
-
-.list-group-item {
-    color: dimgray;
+    color: #faaf4d;
 }
 
 #books-header {
@@ -61,7 +101,7 @@
 
 #books-header a {
     text-decoration: none;
-    color: dimgray;
+    color: #234465;
     font-size: 20px;
 }
 
@@ -105,14 +145,9 @@ a.disabled {
 }
 
 .pagination {
-    width: 400px;
+    width: 100%;
     margin-top: 30px;
     margin-bottom: 30px;
-}
-
-/*Navbar*/
-#dropdown-position {
-    margin-right: 25px;
 }
 
 /*Profile details*/
@@ -163,8 +198,9 @@ a.disabled {
     color: dimgray;
 }
 
-.close-btn {
-    border-radius: 50%;
+.cart-quantity {
+    display: inline-block;
+    width: 28px;
 }
 
 /*Book details*/
@@ -176,4 +212,14 @@ a.disabled {
 #out-of-stock {
     color: red;
     font-weight: bold;
+}
+
+/*Footer*/
+footer {
+    background-color: #063547;
+    color: white;
+}
+
+.fa-github {
+    color: white;
 }

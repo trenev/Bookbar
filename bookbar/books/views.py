@@ -43,7 +43,7 @@ class AddBookView(BookAccessMixin, views.CreateView):
     template_name = 'books/add_book.html'
     model = Book
     form_class = CreateBookForm
-    success_url = reverse_lazy('show books', category='all')
+    success_url = reverse_lazy('index')
 
 
 class EditBookView(BookAccessMixin, views.UpdateView):
@@ -63,7 +63,7 @@ class DeleteBookView(BookAccessMixin, views.DeleteView):
 
     template_name = 'books/delete_book.html'
     model = Book
-    success_url = reverse_lazy('show books', category='all')
+    success_url = reverse_lazy('index')
 
 
 def page_not_found_view(request):

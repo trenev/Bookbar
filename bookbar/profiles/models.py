@@ -13,6 +13,7 @@ class Profile(SoftDeletionModel):
     FIRST_NAME_MAX_LENGTH = 20
     LAST_NAME_MAX_LENGTH = 20
 
+    PHONE_NUMBER_DIGIT_COUNT = 16
     PHONE_NUMBER_REGEX = RegexValidator(
         regex=r'^(\+\d{1,3})?,?\s?\d{8,13}',
         message='Phone number must not consist of space and requires country code. eg: +6591258565'
@@ -37,7 +38,7 @@ class Profile(SoftDeletionModel):
     )
 
     phone_number = models.CharField(
-        max_length=16,
+        max_length=PHONE_NUMBER_DIGIT_COUNT,
         unique=True,
         null=True,
         blank=True,

@@ -13,7 +13,7 @@
                             <h2>{{ object.title }}</h2>
                             <h4>Author : {{ object.author }}</h4>
                             <h5>Category: {{ object.category }}</h5>
-                            <span>${{ object.price|floatformat:2 }}</span>
+                            <h5>${{ object.price|floatformat:2 }}</h5>
                             <div>
                                 {% if object.quantity > 0 %}
                                     <h6>Availability: <span id="in-stock">In Stock</span></h6>

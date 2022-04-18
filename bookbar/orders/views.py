@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.contrib.auth import mixins
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,10 +6,11 @@ from django.utils import timezone
 from django.views import generic as views
 
 from bookbar.books.models import Book
+from bookbar.common.mixins import UserAccessMixin
 from bookbar.orders.models import OrderBook, Order
 
 
-class OrderDetailsView(mixins.LoginRequiredMixin, views.View):
+class OrderDetailsView(UserAccessMixin, views.View):
     def get(self, request, *args, **kwargs):
         try:
             order = Order.objects.get(customer=self.request.user, ordered=False)
@@ -73,7 +73,7 @@ def remove_from_cart(request, pk):
 
     ordered_book.delete()
     if order.books.all():
-        return redirect('order details', pk=order.pk)
+        return redirect('order details', pk=order.customer_id)
     else:
         order.delete()
         return redirect('index')
