@@ -32,6 +32,7 @@ class AppUsersManager(base_user.BaseUserManager):
 
 
 '''
+Soft deletion manager provided the soft deletion of objects in the database.
 https://adriennedomingus.com/blog/soft-deletion-in-django
 '''
 

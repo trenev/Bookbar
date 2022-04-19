@@ -34,12 +34,12 @@
                         </td>
                         <td>
                             <div style="width: 95px">
-                                <a class="cart-quantity" href="{% url 'remove from cart' item.pk %}">
+                                <a class="cart-quantity" href="{% url 'remove single item from cart' item.pk %}">
                                     <img id="bag-image" src="{% static 'images/icons8-minus-48.png' %}"
                                          alt="shopping-bag">
                                 </a>
                                 <h5 class="cart-quantity">{{ item.quantity }}</h5>
-                                <a class="cart-quantity" href="{% url 'add to cart' item.book.pk %}">
+                                <a class="cart-quantity" href="{% url 'increase added item to cart' item.pk %}">
                                     <img id="bag-image" src="{% static 'images/icons8-plus-48.png' %}"
                                          alt="shopping-bag">
                                 </a>

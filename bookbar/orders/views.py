@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views import generic as views
 
 from bookbar.books.models import Book
-from bookbar.common.mixins import UserAccessMixin
+from bookbar.common.mixins import UserAccessMixin, OrderedBookAccessMixin, OrderAccessMixin
 from bookbar.orders.models import OrderBook, Order
 
 
@@ -14,7 +14,9 @@ class OrderDetailsView(UserAccessMixin, views.View):
     def get(self, request, *args, **kwargs):
         try:
             order = Order.objects.get(customer=self.request.user, ordered=False)
-            ordered_books = OrderBook.objects.filter(customer_id=self.request.user, ordered=False)
+            ordered_books = OrderBook.objects\
+                .filter(customer_id=self.request.user, ordered=False)\
+                .order_by('book__title')
 
             context = {
                 'order': order,
@@ -26,6 +28,78 @@ class OrderDetailsView(UserAccessMixin, views.View):
         except exceptions.ObjectDoesNotExist:
             messages.warning(self.request, 'Your Cart is empty')
             return redirect('index')
+
+
+class RemoveFromCartView(OrderedBookAccessMixin, views.View):
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.get(customer=self.request.user, ordered=False)
+        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
+        book = Book.objects.get(pk=ordered_book.book.pk)
+
+        qty = ordered_book.quantity
+        book.quantity += qty
+        book.save()
+
+        ordered_book.delete()
+
+        if not order.books.all():
+            order.delete()
+            return redirect('index')
+
+        return redirect('order details', pk=order.customer_id)
+
+
+class RemoveSingleItemFromCartView(OrderedBookAccessMixin, views.View):
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.get(customer=self.request.user, ordered=False)
+        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
+        book = Book.objects.get(pk=ordered_book.book.pk)
+
+        book.quantity += 1
+        book.save()
+
+        if ordered_book.quantity > 1:
+            ordered_book.quantity -= 1
+            ordered_book.save()
+        else:
+            ordered_book.delete()
+
+        if not order.books.all():
+            order.delete()
+            return redirect('index')
+
+        return redirect('order details', pk=order.customer_id)
+
+
+class FinishOrderView(OrderAccessMixin, views.View):
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.get(pk=self.kwargs['pk'])
+        ordered_books = OrderBook.objects.filter(order=order)
+
+        order.ordered = True
+        order.save()
+
+        for book in ordered_books:
+            book.ordered = True
+            book.save()
+        messages.success(request, 'Your order has been finished successfully.')
+
+        return redirect('index')
+
+
+class AddItemFromCartView(OrderedBookAccessMixin, views.View):
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.get(customer=self.request.user, ordered=False)
+        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
+        book = Book.objects.get(pk=ordered_book.book.pk)
+
+        book.quantity -= 1
+        book.save()
+
+        ordered_book.quantity += 1
+        ordered_book.save()
+
+        return redirect('order details', pk=order.customer_id)
 
 
 @login_required
@@ -60,35 +134,3 @@ def add_to_cart(request, pk):
         order.books.add(order_book)
         return redirect('show books', category='all')
 
-
-@login_required
-def remove_from_cart(request, pk):
-    order = Order.objects.get(customer=request.user, ordered=False)
-    ordered_book = OrderBook.objects.get(pk=pk)
-
-    book = Book.objects.get(pk=ordered_book.book.pk)
-    qty = ordered_book.quantity
-    book.quantity += qty
-    book.save()
-
-    ordered_book.delete()
-    if order.books.all():
-        return redirect('order details', pk=order.customer_id)
-    else:
-        order.delete()
-        return redirect('index')
-
-
-def finish_order(request, pk):
-    order = Order.objects.get(pk=pk)
-    ordered_books = OrderBook.objects.filter(order=order)
-
-    order.ordered = True
-    order.save()
-
-    for book in ordered_books:
-        book.ordered = True
-        book.save()
-    messages.success(request, 'Your order has been finished successfully.')
-
-    return redirect('index')

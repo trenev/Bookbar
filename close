@@ -1,0 +1,350 @@
+[1mdiff --git a/bookbar/books/models.py b/bookbar/books/models.py[m
+[1mindex 7565435..ac8504d 100644[m
+[1m--- a/bookbar/books/models.py[m
+[1m+++ b/bookbar/books/models.py[m
+[36m@@ -20,7 +20,7 @@[m [mclass Category(SoftDeletionModel):[m
+ [m
+ [m
+ class Book(SoftDeletionModel):[m
+[31m-    TITLE_MAX_LENGTH = 100[m
+[32m+[m[32m    TITLE_MAX_LENGTH = 150[m
+     AUTHOR_MAX_LENGTH = 50[m
+ [m
+     IMAGE_UPLOAD_TO_DIR = 'images/'[m
+[1mdiff --git a/bookbar/books/views.py b/bookbar/books/views.py[m
+[1mindex 2ea8849..705bcdd 100644[m
+[1m--- a/bookbar/books/views.py[m
+[1m+++ b/bookbar/books/views.py[m
+[36m@@ -18,7 +18,7 @@[m [mclass BooksView(views.ListView):[m
+     model = Book[m
+     paginate_by = 8[m
+ [m
+[31m-    def get_context_data(self, *, object_list=None, **kwargs):[m
+[32m+[m[32m    def get_context_data(self, **kwargs):[m
+         data = super().get_context_data(**kwargs)[m
+         data['category_list'] = Category.objects.all()[m
+         data['category'] = self.kwargs.get('category')[m
+[1mdiff --git a/bookbar/common/managers.py b/bookbar/common/managers.py[m
+[1mindex 4ec1161..0c94bff 100644[m
+[1m--- a/bookbar/common/managers.py[m
+[1m+++ b/bookbar/common/managers.py[m
+[36m@@ -32,6 +32,7 @@[m [mclass AppUsersManager(base_user.BaseUserManager):[m
+ [m
+ [m
+ '''[m
+[32m+[m[32mSoft deletion manager provided the soft deletion of objects in the database.[m
+ https://adriennedomingus.com/blog/soft-deletion-in-django[m
+ '''[m
+ [m
+[1mdiff --git a/bookbar/common/mixins.py b/bookbar/common/mixins.py[m
+[1mindex def6610..216d563 100644[m
+[1m--- a/bookbar/common/mixins.py[m
+[1m+++ b/bookbar/common/mixins.py[m
+[36m@@ -1,6 +1,8 @@[m
+ from django.contrib.auth import mixins[m
+ from django.shortcuts import redirect[m
+ [m
+[32m+[m[32mfrom bookbar.orders.models import OrderBook, Order[m
+[32m+[m
+ [m
+ class BootstrapFormControlMixin:[m
+     fields = {}[m
+[36m@@ -29,3 +31,23 @@[m [mclass UserAccessMixin(mixins.LoginRequiredMixin):[m
+         if not request.user.pk == self.kwargs['pk']:[m
+             return redirect('error')[m
+         return super().dispatch(request, *args, **kwargs)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass OrderedBookAccessMixin(mixins.LoginRequiredMixin):[m
+[32m+[m[32m    kwargs = {}[m
+[32m+[m
+[32m+[m[32m    def dispatch(self, request, *args, **kwargs):[m
+[32m+[m[32m        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])[m
+[32m+[m[32m        if not request.user.pk == ordered_book.customer_id:[m
+[32m+[m[32m            return redirect('error')[m
+[32m+[m[32m        return super().dispatch(request, *args, **kwargs)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass OrderAccessMixin(mixins.LoginRequiredMixin):[m
+[32m+[m[32m    kwargs = {}[m
+[32m+[m
+[32m+[m[32m    def dispatch(self, request, *args, **kwargs):[m
+[32m+[m[32m        order = Order.objects.get(pk=self.kwargs['pk'])[m
+[32m+[m[32m        if not request.user.pk == order.customer_id:[m
+[32m+[m[32m            return redirect('error')[m
+[32m+[m[32m        return super().dispatch(request, *args, **kwargs)[m
+[1mdiff --git a/bookbar/orders/templatetags/user_order_books.py b/bookbar/orders/templatetags/user_order_books.py[m
+[1mindex e916e83..a3e0412 100644[m
+[1m--- a/bookbar/orders/templatetags/user_order_books.py[m
+[1m+++ b/bookbar/orders/templatetags/user_order_books.py[m
+[36m@@ -7,7 +7,7 @@[m [mregister = template.Library()[m
+ [m
+ @register.filter(name='count')[m
+ def order_books_count(user):[m
+[31m-    ordered_books = Order.objects.filter(customer=user)[m
+[32m+[m[32m    ordered_books = Order.objects.filter(customer=user, ordered=False)[m
+     if ordered_books.exists():[m
+         return ordered_books[0].get_books_count()[m
+     return 0[m
+[1mdiff --git a/bookbar/orders/urls.py b/bookbar/orders/urls.py[m
+[1mindex 993a8a5..f1427af 100644[m
+[1m--- a/bookbar/orders/urls.py[m
+[1m+++ b/bookbar/orders/urls.py[m
+[36m@@ -1,10 +1,13 @@[m
+ from django.urls import path[m
+ [m
+[31m-from bookbar.orders.views import add_to_cart, OrderDetailsView, finish_order, remove_from_cart[m
+[32m+[m[32mfrom bookbar.orders.views import add_to_cart, OrderDetailsView, RemoveSingleItemFromCartView, \[m
+[32m+[m[32m    RemoveFromCartView, FinishOrderView, AddItemFromCartView[m
+ [m
+ urlpatterns = ([m
+[31m-    path('add-to-cart/<int:pk>/', add_to_cart, name='add to cart'),[m
+[31m-    path('remove-from-cart/<int:pk>/', remove_from_cart, name='remove from cart'),[m
+[32m+[m[32m    path('add-from-books/<int:pk>/', add_to_cart, name='add to cart'),[m
+[32m+[m[32m    path('add-from-cart/<int:pk>/', AddItemFromCartView.as_view(), name='increase added item to cart'),[m
+[32m+[m[32m    path('remove-from-cart/<int:pk>/', RemoveFromCartView.as_view(), name='remove from cart'),[m
+[32m+[m[32m    path('remove-item-from-cart/<int:pk>/', RemoveSingleItemFromCartView.as_view(), name='remove single item from cart'),[m
+     path('details/<int:pk>/', OrderDetailsView.as_view(), name='order details'),[m
+[31m-    path('finish/<int:pk>/', finish_order, name='finish order'),[m
+[32m+[m[32m    path('finish/<int:pk>/', FinishOrderView.as_view(), name='finish order'),[m
+ )[m
+[1mdiff --git a/bookbar/orders/views.py b/bookbar/orders/views.py[m
+[1mindex 714aea8..e48e729 100644[m
+[1m--- a/bookbar/orders/views.py[m
+[1m+++ b/bookbar/orders/views.py[m
+[36m@@ -6,7 +6,7 @@[m [mfrom django.utils import timezone[m
+ from django.views import generic as views[m
+ [m
+ from bookbar.books.models import Book[m
+[31m-from bookbar.common.mixins import UserAccessMixin[m
+[32m+[m[32mfrom bookbar.common.mixins import UserAccessMixin, OrderedBookAccessMixin, OrderAccessMixin[m
+ from bookbar.orders.models import OrderBook, Order[m
+ [m
+ [m
+[36m@@ -14,7 +14,9 @@[m [mclass OrderDetailsView(UserAccessMixin, views.View):[m
+     def get(self, request, *args, **kwargs):[m
+         try:[m
+             order = Order.objects.get(customer=self.request.user, ordered=False)[m
+[31m-            ordered_books = OrderBook.objects.filter(customer_id=self.request.user, ordered=False)[m
+[32m+[m[32m            ordered_books = OrderBook.objects\[m
+[32m+[m[32m                .filter(customer_id=self.request.user, ordered=False)\[m
+[32m+[m[32m                .order_by('book__title')[m
+ [m
+             context = {[m
+                 'order': order,[m
+[36m@@ -28,6 +30,78 @@[m [mclass OrderDetailsView(UserAccessMixin, views.View):[m
+             return redirect('index')[m
+ [m
+ [m
+[32m+[m[32mclass RemoveFromCartView(OrderedBookAccessMixin, views.View):[m
+[32m+[m[32m    def get(self, request, *args, **kwargs):[m
+[32m+[m[32m        order = Order.objects.get(customer=self.request.user, ordered=False)[m
+[32m+[m[32m        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])[m
+[32m+[m[32m        book = Book.objects.get(pk=ordered_book.book.pk)[m
+[32m+[m
+[32m+[m[32m        qty = ordered_book.quantity[m
+[32m+[m[32m        book.quantity += qty[m
+[32m+[m[32m        book.save()[m
+[32m+[m
+[32m+[m[32m        ordered_book.delete()[m
+[32m+[m
+[32m+[m[32m        if not order.books.all():[m
+[32m+[m[32m            order.delete()[m
+[32m+[m[32m            return redirect('index')[m
+[32m+[m
+[32m+[m[32m        return redirect('order details', pk=order.customer_id)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass RemoveSingleItemFromCartView(OrderedBookAccessMixin, views.View):[m
+[32m+[m[32m    def get(self, request, *args, **kwargs):[m
+[32m+[m[32m        order = Order.objects.get(customer=self.request.user, ordered=False)[m
+[32m+[m[32m        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])[m
+[32m+[m[32m        book = Book.objects.get(pk=ordered_book.book.pk)[m
+[32m+[m
+[32m+[m[32m        book.quantity += 1[m
+[32m+[m[32m        book.save()[m
+[32m+[m
+[32m+[m[32m        if ordered_book.quantity > 1:[m
+[32m+[m[32m            ordered_book.quantity -= 1[m
+[32m+[m[32m            ordered_book.save()[m
+[32m+[m[32m        else:[m
+[32m+[m[32m            ordered_book.delete()[m
+[32m+[m
+[32m+[m[32m        if not order.books.all():[m
+[32m+[m[32m            order.delete()[m
+[32m+[m[32m            return redirect('index')[m
+[32m+[m
+[32m+[m[32m        return redirect('order details', pk=order.customer_id)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass FinishOrderView(OrderAccessMixin, views.View):[m
+[32m+[m[32m    def get(self, request, *args, **kwargs):[m
+[32m+[m[32m        order = Order.objects.get(pk=self.kwargs['pk'])[m
+[32m+[m[32m        ordered_books = OrderBook.objects.filter(order=order)[m
+[32m+[m
+[32m+[m[32m        order.ordered = True[m
+[32m+[m[32m        order.save()[m
+[32m+[m
+[32m+[m[32m        for book in ordered_books:[m
+[32m+[m[32m            book.ordered = True[m
+[32m+[m[32m            book.save()[m
+[32m+[m[32m        messages.success(request, 'Your order has been finished successfully.')[m
+[32m+[m
+[32m+[m[32m        return redirect('index')[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass AddItemFromCartView(OrderedBookAccessMixin, views.View):[m
+[32m+[m[32m    def get(self, request, *args, **kwargs):[m
+[32m+[m[32m        order = Order.objects.get(customer=self.request.user, ordered=False)[m
+[32m+[m[32m        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])[m
+[32m+[m[32m        book = Book.objects.get(pk=ordered_book.book.pk)[m
+[32m+[m
+[32m+[m[32m        book.quantity -= 1[m
+[32m+[m[32m        book.save()[m
+[32m+[m
+[32m+[m[32m        ordered_book.quantity += 1[m
+[32m+[m[32m        ordered_book.save()[m
+[32m+[m
+[32m+[m[32m        return redirect('order details', pk=order.customer_id)[m
+[32m+[m
+[32m+[m
+ @login_required[m
+ def add_to_cart(request, pk):[m
+     book = get_object_or_404(Book, pk=pk)[m
+[36m@@ -60,35 +134,3 @@[m [mdef add_to_cart(request, pk):[m
+         order.books.add(order_book)[m
+         return redirect('show books', category='all')[m
+ [m
+[31m-[m
+[31m-@login_required[m
+[31m-def remove_from_cart(request, pk):[m
+[31m-    order = Order.objects.get(customer=request.user, ordered=False)[m
+[31m-    ordered_book = OrderBook.objects.get(pk=pk)[m
+[31m-[m
+[31m-    book = Book.objects.get(pk=ordered_book.book.pk)[m
+[31m-    qty = ordered_book.quantity[m
+[31m-    book.quantity += qty[m
+[31m-    book.save()[m
+[31m-[m
+[31m-    ordered_book.delete()[m
+[31m-    if order.books.all():[m
+[31m-        return redirect('order details', pk=order.customer_id)[m
+[31m-    else:[m
+[31m-        order.delete()[m
+[31m-        return redirect('index')[m
+[31m-[m
+[31m-[m
+[31m-def finish_order(request, pk):[m
+[31m-    order = Order.objects.get(pk=pk)[m
+[31m-    ordered_books = OrderBook.objects.filter(order=order)[m
+[31m-[m
+[31m-    order.ordered = True[m
+[31m-    order.save()[m
+[31m-[m
+[31m-    for book in ordered_books:[m
+[31m-        book.ordered = True[m
+[31m-        book.save()[m
+[31m-    messages.success(request, 'Your order has been finished successfully.')[m
+[31m-[m
+[31m-    return redirect('index')[m
+[1mdiff --git a/templates/common/index.html b/templates/common/index.html[m
+[1mindex 2e21b31..bb0725d 100644[m
+[1m--- a/templates/common/index.html[m
+[1m+++ b/templates/common/index.html[m
+[36m@@ -24,7 +24,7 @@[m
+                                 <p class="card-text">{{ book.author }}</p>[m
+                             </div>[m
+                             <div>[m
+[31m-                                <div class="card-bottom"><h5 class="text-muted">${{ book.price|floatformat:2 }}</h5>[m
+[32m+[m[32m                                <div class="card-bottom"><h5>${{ book.price|floatformat:2 }}</h5>[m
+                                 </div>[m
+                                 {% if book.quantity > 0 and not request.user.is_staff %}[m
+                                     <div class="card-bottom"><a href="{% url 'add to cart' book.pk %}">[m
+[1mdiff --git a/templates/common/pagination.html b/templates/common/pagination.html[m
+[1mindex 62b5219..519d01a 100644[m
+[1m--- a/templates/common/pagination.html[m
+[1m+++ b/templates/common/pagination.html[m
+[36m@@ -1,33 +1,35 @@[m
+[31m-<ul class="pagination justify-content-center">[m
+[31m-    {% if page_obj.has_previous %}[m
+[31m-        <li class="page-item">[m
+[31m-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>[m
+[31m-        </li>[m
+[31m-    {% else %}[m
+[31m-        <li class="page-item disabled">[m
+[31m-            <a class="page-link">&laquo;</a>[m
+[31m-        </li>[m
+[31m-    {% endif %}[m
+[31m-[m
+[31m-    {% for i in page_obj.paginator.page_range %}[m
+[31m-        {% if page_obj.number == i %}[m
+[31m-            <li class="page-item active">[m
+[31m-            <a class="page-link" href="#">{{ i }} </a>[m
+[32m+[m[32m{% if page_obj.has_other_pages %}[m
+[32m+[m[32m    <ul class="pagination justify-content-center">[m
+[32m+[m[32m        {% if page_obj.has_previous %}[m
+[32m+[m[32m            <li class="page-item">[m
+[32m+[m[32m                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&#10094; Previous</a>[m
+             </li>[m
+         {% else %}[m
+[31m-            <li class="page-item">[m
+[31m-            <a class="page-link" href="?page={{ i }}">{{ i }}</a>[m
+[32m+[m[32m            <li class="page-item disabled">[m
+[32m+[m[32m                <a class="page-link">&#10094; Previous</a>[m
+             </li>[m
+         {% endif %}[m
+[31m-    {% endfor %}[m
+ [m
+[31m-    {% if page_obj.has_next %}[m
+[31m-        <li class="page-item">[m
+[31m-        <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>[m
+[31m-        </li>[m
+[31m-    {% else %}[m
+[31m-        <li class="page-item disabled">[m
+[31m-        <a class="page-link">&raquo;</a>[m
+[31m-        </li>[m
+[31m-    {% endif %}[m
+[31m-</ul>[m
+[32m+[m[32m        {% for i in page_obj.paginator.page_range %}[m
+[32m+[m[32m            {% if page_obj.number == i %}[m
+[32m+[m[32m                <li class="page-item active">[m
+[32m+[m[32m                    <a class="page-link" href="#">{{ i }} </a>[m
+[32m+[m[32m                </li>[m
+[32m+[m[32m            {% else %}[m
+[32m+[m[32m                <li class="page-item">[m
+[32m+[m[32m                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>[m
+[32m+[m[32m                </li>[m
+[32m+[m[32m            {% endif %}[m
+[32m+[m[32m        {% endfor %}[m
+[32m+[m
+[32m+[m[32m        {% if page_obj.has_next %}[m
+[32m+[m[32m            <li class="page-item">[m
+[32m+[m[32m                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &#10095;</a>[m
+[32m+[m[32m            </li>[m
+[32m+[m[32m        {% else %}[m
+[32m+[m[32m            <li class="page-item disabled">[m
+[32m+[m[32m                <a class="page-link">Next &#10095;</a>[m
+[32m+[m[32m            </li>[m
+[32m+[m[32m        {% endif %}[m
+[32m+[m[32m    </ul>[m
+[32m+[m[32m{% endif %}[m
+\ No newline at end of file[m
+[1mdiff --git a/templates/orders/cart.html b/templates/orders/cart.html[m
+[1mindex 1085c8f..b1059ac 100644[m
+[1m--- a/templates/orders/cart.html[m
+[1m+++ b/templates/orders/cart.html[m
+[36m@@ -34,12 +34,12 @@[m
+                         </td>[m
+                         <td>[m
+                             <div style="width: 95px">[m
+[31m-                                <a class="cart-quantity" href="{% url 'remove from cart' item.pk %}">[m
+[32m+[m[32m                                <a class="cart-quantity" href="{% url 'remove single item from cart' item.pk %}">[m
+                                     <img id="bag-image" src="{% static 'images/icons8-minus-48.png' %}"[m
+                                          alt="shopping-bag">[m
+                                 </a>[m
+                                 <h5 class="cart-quantity">{{ item.quantity }}</h5>[m
+[31m-                                <a class="cart-quantity" href="{% url 'add to cart' item.book.pk %}">[m
+[32m+[m[32m                                <a class="cart-quantity" href="{% url 'increase added item to cart' item.pk %}">[m
+                                     <img id="bag-image" src="{% static 'images/icons8-plus-48.png' %}"[m
+                                          alt="shopping-bag">[m
+                                 </a>[m

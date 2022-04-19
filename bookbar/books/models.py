@@ -20,7 +20,7 @@ class Category(SoftDeletionModel):
 
 
 class Book(SoftDeletionModel):
-    TITLE_MAX_LENGTH = 100
+    TITLE_MAX_LENGTH = 150
     AUTHOR_MAX_LENGTH = 50
 
     IMAGE_UPLOAD_TO_DIR = 'images/'

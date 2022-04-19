@@ -24,7 +24,7 @@
                                 <p class="card-text">{{ book.author }}</p>
                             </div>
                             <div>
-                                <div class="card-bottom"><h5 class="text-muted">${{ book.price|floatformat:2 }}</h5>
+                                <div class="card-bottom"><h5>${{ book.price|floatformat:2 }}</h5>
                                 </div>
                                 {% if book.quantity > 0 and not request.user.is_staff %}
                                     <div class="card-bottom"><a href="{% url 'add to cart' book.pk %}">

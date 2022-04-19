@@ -18,7 +18,7 @@ class BooksView(views.ListView):
     model = Book
     paginate_by = 8
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['category_list'] = Category.objects.all()
         data['category'] = self.kwargs.get('category')
