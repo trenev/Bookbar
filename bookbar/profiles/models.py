@@ -45,6 +45,10 @@ class Profile(SoftDeletionModel):
         validators=[PHONE_NUMBER_REGEX],
     )
 
+    is_complete = models.BooleanField(
+        default=False,
+    )
+
     user = models.OneToOneField(
         UserModel,
         on_delete=models.CASCADE,

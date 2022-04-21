@@ -2,6 +2,8 @@
 {% block page_content %}
     {% load static %}
 
+    {% include 'common/messages.html' %}
+
     <div id="books-header">
         <a href="{% url 'show books' category='all' %}">
             Books

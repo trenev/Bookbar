@@ -2,6 +2,8 @@
 {% load static %}
 {% block page_content %}
 
+    {% include 'common/messages.html' %}
+
     <div class="container">
         <div class="table-responsive">
             <table class="table">
@@ -82,7 +84,11 @@
                     <td></td>
                     <td></td>
                     <td colspan="2">
-                        <a class="btn btn-warning" href="{% url 'finish order' order.pk %}">Finish Order</a>
+                        {% if not profile.is_complete %}
+                            <a class="btn btn disabled" href="javascript:void(0)">Finish Order</a>
+                        {% else %}
+                            <a class="btn btn-warning" href="{% url 'finish order' order.pk %}">Finish Order</a>
+                        {% endif %}
                     </td>
                 </tr>
                 </tbody>

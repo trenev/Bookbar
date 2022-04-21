@@ -5,7 +5,6 @@ from django.urls import path, include
 
 from bookbar.books.views import IndexView, page_not_found_view
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
