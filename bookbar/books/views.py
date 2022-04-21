@@ -66,5 +66,5 @@ class DeleteBookView(BookAccessMixin, views.DeleteView):
     success_url = reverse_lazy('index')
 
 
-def page_not_found_view(request):
+def page_not_found_view(request, exception):
     return render(request, 'common/404.html', status=404)
