@@ -38,26 +38,22 @@ class OrderDetailsView(UserAccessMixin, views.View):
 
 class RemoveFromCartView(OrderedBookAccessMixin, views.View):
     def get(self, request, *args, **kwargs):
-        try:
-            order = Order.objects.get(customer=self.request.user, ordered=False)
-            ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
-            book = Book.objects.get(pk=ordered_book.book.pk)
+        order = Order.objects.get(customer=self.request.user, ordered=False)
+        ordered_book = get_object_or_404(OrderBook, pk=self.kwargs['pk'])
+        book = Book.objects.get(pk=ordered_book.book.pk)
 
-            qty = ordered_book.quantity
-            book.quantity += qty
-            book.save()
+        qty = ordered_book.quantity
+        book.quantity += qty
+        book.save()
 
-            ordered_book.delete()
+        ordered_book.delete()
 
-            if not order.books.all():
-                order.delete()
-                return redirect('index')
-
-            messages.info(request, 'This book was removed from your cart.')
-            return redirect('order details', pk=order.customer_id)
-
-        except OrderBook.DoesNotExist:
+        if not order.books.all():
+            order.delete()
             return redirect('index')
+
+        messages.info(request, 'This book was removed from your cart.')
+        return redirect('order details', pk=order.customer_id)
 
 
 class RemoveSingleItemFromCartView(OrderedBookAccessMixin, views.View):
