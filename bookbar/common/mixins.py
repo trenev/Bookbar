@@ -30,7 +30,6 @@ class UserAccessMixin(mixins.LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.pk == self.kwargs['pk']:
             return render(request, 'common/404.html')
-            # return redirect('error')
         return super().dispatch(request, *args, **kwargs)
 
 

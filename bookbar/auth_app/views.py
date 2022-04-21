@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth import views as auth_views
-from django.contrib.auth import mixins
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic as views
 
 from bookbar.auth_app.forms import UserRegistrationForm, UserLoginForm, ChangeUserEmailForm, ChangeUserPasswordForm
+from bookbar.common.mixins import UserAccessMixin
 
 UserModel = get_user_model()
 
@@ -41,7 +41,7 @@ class UserLoginView(auth_views.LoginView):
         return reverse('index')
 
 
-class ChangeUserEmailView(mixins.LoginRequiredMixin, views.UpdateView):
+class ChangeUserEmailView(UserAccessMixin, views.UpdateView):
     template_name = 'auth/change_email.html'
     model = UserModel
     form_class = ChangeUserEmailForm
