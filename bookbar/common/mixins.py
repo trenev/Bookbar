@@ -1,7 +1,5 @@
 from django.contrib.auth import mixins
-from django.shortcuts import redirect, render
-
-from bookbar.orders.models import OrderBook, Order
+from django.shortcuts import render
 
 
 class BootstrapFormControlMixin:
@@ -32,22 +30,3 @@ class UserAccessMixin(mixins.LoginRequiredMixin):
             return render(request, 'common/404.html')
         return super().dispatch(request, *args, **kwargs)
 
-
-class OrderedBookAccessMixin(mixins.LoginRequiredMixin):
-    kwargs = {}
-
-    def dispatch(self, request, *args, **kwargs):
-        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
-        if not request.user.pk == ordered_book.customer_id:
-            return render(request, 'common/404.html')
-        return super().dispatch(request, *args, **kwargs)
-
-
-class OrderAccessMixin(mixins.LoginRequiredMixin):
-    kwargs = {}
-
-    def dispatch(self, request, *args, **kwargs):
-        order = Order.objects.get(pk=self.kwargs['pk'])
-        if not request.user.pk == order.customer_id:
-            return render(request, 'common/404.html')
-        return super().dispatch(request, *args, **kwargs)

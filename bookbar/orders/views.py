@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import mixins
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
 from django.shortcuts import render, get_object_or_404, redirect
@@ -6,7 +7,7 @@ from django.utils import timezone
 from django.views import generic as views
 
 from bookbar.books.models import Book
-from bookbar.common.mixins import UserAccessMixin, OrderedBookAccessMixin, OrderAccessMixin
+from bookbar.common.mixins import UserAccessMixin
 from bookbar.orders.models import OrderBook, Order
 from bookbar.profiles.models import Profile
 
@@ -36,52 +37,14 @@ class OrderDetailsView(UserAccessMixin, views.View):
             return redirect('index')
 
 
-class RemoveFromCartView(OrderedBookAccessMixin, views.View):
+class FinishOrderView(mixins.LoginRequiredMixin, views.View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.pk == self.kwargs['pk']:
+            return render(request, 'common/404.html')
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        order = Order.objects.get(customer=self.request.user, ordered=False)
-        ordered_book = get_object_or_404(OrderBook, pk=self.kwargs['pk'])
-        book = Book.objects.get(pk=ordered_book.book.pk)
-
-        qty = ordered_book.quantity
-        book.quantity += qty
-        book.save()
-
-        ordered_book.delete()
-
-        if not order.books.all():
-            order.delete()
-            return redirect('index')
-
-        messages.info(request, 'This book was removed from your cart.')
-        return redirect('order details', pk=order.customer_id)
-
-
-class RemoveSingleItemFromCartView(OrderedBookAccessMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.get(customer=self.request.user, ordered=False)
-        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
-        book = Book.objects.get(pk=ordered_book.book.pk)
-
-        book.quantity += 1
-        book.save()
-
-        if ordered_book.quantity > 1:
-            ordered_book.quantity -= 1
-            ordered_book.save()
-        else:
-            ordered_book.delete()
-
-        if not order.books.all():
-            order.delete()
-            return redirect('index')
-
-        messages.info(request, 'Book quantity was updated.')
-        return redirect('order details', pk=order.customer_id)
-
-
-class FinishOrderView(OrderAccessMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.get(pk=self.kwargs['pk'])
+        order = get_object_or_404(Order, pk=self.kwargs['pk'])
         ordered_books = OrderBook.objects.filter(order=order)
 
         order.ordered = True
@@ -90,59 +53,118 @@ class FinishOrderView(OrderAccessMixin, views.View):
         for book in ordered_books:
             book.ordered = True
             book.save()
+
         messages.success(request, 'Your order has been finished successfully.')
-
         return redirect('index')
+    
 
+@login_required
+def add_to_cart(request, pk):
+    book_is_ordered = False
+    book = get_object_or_404(Book, pk=pk)
 
-class AddItemFromCartView(OrderedBookAccessMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.get(customer=self.request.user, ordered=False)
-        ordered_book = OrderBook.objects.get(pk=self.kwargs['pk'])
-        book = Book.objects.get(pk=ordered_book.book.pk)
+    order_query_set = Order.objects.filter(customer=request.user, ordered=False)
+    if order_query_set.exists():
+        order = order_query_set[0]
+    else:
+        order_date = timezone.now()
+        order = Order.objects.create(customer=request.user, order_date=order_date)
+
+    order_book_query_set = OrderBook.objects.filter(customer=request.user, book=book, ordered=False)
+    if order_book_query_set.exists():
+        order_book = order_book_query_set[0]
+
+        if book.quantity < 1:
+            messages.info(request, 'The book is out of stock. It can not be added to your cart.')
+            return redirect('show books', category='all')
 
         book.quantity -= 1
+        order_book.quantity += 1
+        book.save()
+        order_book.save()
+        book_is_ordered = True
+    else:
+        if book.quantity < 1:
+            messages.info(request, 'The book is out of stock. It can not be added to your cart.')
+            return redirect('show books', category='all')
+
+        book.quantity -= 1
+        order_book = OrderBook.objects.create(customer=request.user, book=book, ordered=False)
+        order.books.add(order_book)
         book.save()
 
-        ordered_book.quantity += 1
-        ordered_book.save()
+    if 'add-quantity-to-cart' in request.path:
+        messages.info(request, 'Book quantity was updated.')
+        return redirect('order details', pk=order.customer_id)
+
+    if book_is_ordered:
+        messages.info(request, 'Book quantity was updated.')
+        return redirect('show books', category='all')
+    else:
+        messages.info(request, 'Book was added to your cart')
+        return redirect('show books', category='all')
+
+
+@login_required
+def remove_quantity_from_cart(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+    order_query_set = Order.objects.filter(customer=request.user, ordered=False)
+    if order_query_set.exists():
+        order = order_query_set[0]
+
+        order_book_query_set = OrderBook.objects.filter(customer=request.user, book=book, ordered=False)
+        if order_book_query_set.exists():
+            order_book = order_book_query_set[0]
+            if order_book.quantity > 1:
+                order_book.quantity -= 1
+                order_book.save()
+
+            else:
+                order.books.remove(order_book)
+                order_book.delete()
+
+            book.quantity += 1
+            book.save()
+
+        if not order.books.all():
+            order.delete()
+            messages.warning(request, 'Your Cart is empty')
+            return redirect('index')
 
         messages.info(request, 'Book quantity was updated.')
         return redirect('order details', pk=order.customer_id)
 
+    return redirect('index')
+
 
 @login_required
-def add_to_cart(request, pk):
+def remove_from_cart(request, pk):
     book = get_object_or_404(Book, pk=pk)
-    order_book, created = OrderBook.objects.get_or_create(
-        customer=request.user,
-        book=book,
-        ordered=False,
-    )
 
-    book.quantity -= 1
-    book.save()
     order_query_set = Order.objects.filter(customer=request.user, ordered=False)
-
     if order_query_set.exists():
         order = order_query_set[0]
-        if order.books.filter(book__pk=book.pk).exists():
-            order_book.quantity += 1
-            order_book.save()
-            messages.info(request, 'Book quantity was updated.')
-            return redirect('show books', category='all')
-        else:
-            order.books.add(order_book)
-            messages.info(request, 'Book was added to your cart')
-            return redirect('show books', category='all')
 
-    else:
-        order_date = timezone.now()
-        order = Order.objects.create(
-            customer=request.user,
-            order_date=order_date,
-        )
-        order.books.add(order_book)
-        messages.info(request, 'Book was added to your cart')
-        return redirect('show books', category='all')
+        order_book_query_set = OrderBook.objects.filter(customer=request.user, book=book, ordered=False)
+        if order_book_query_set.exists():
+            order_book = order_book_query_set[0]
+            order.books.remove(order_book)
+            order_book.delete()
+
+            book.quantity += order_book.quantity
+            book.save()
+
+        if not order.books.all():
+            order.delete()
+            messages.warning(request, 'Your Cart is empty')
+            return redirect('index')
+
+        messages.info(request, 'This book was removed from your cart.')
+        return redirect('order details', pk=order.customer_id)
+
+    return redirect('index')
+
+
+
 

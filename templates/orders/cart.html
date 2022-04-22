@@ -36,12 +36,12 @@
                         </td>
                         <td>
                             <div style="width: 95px">
-                                <a class="cart-quantity" href="{% url 'remove single item from cart' item.pk %}">
+                                <a class="cart-quantity" href="{% url 'remove quantity from cart' item.book.pk %}">
                                     <img id="bag-image" src="{% static 'images/icons8-minus-48.png' %}"
                                          alt="shopping-bag">
                                 </a>
                                 <h5 class="cart-quantity">{{ item.quantity }}</h5>
-                                <a class="cart-quantity" href="{% url 'increase added item to cart' item.pk %}">
+                                <a class="cart-quantity" href="{% url 'add quantity to cart' item.book.pk %}">
                                     <img id="bag-image" src="{% static 'images/icons8-plus-48.png' %}"
                                          alt="shopping-bag">
                                 </a>
@@ -51,7 +51,7 @@
                             <h5>${{ item.get_price|floatformat:2 }}</h5>
                         </td>
                         <td>
-                            <a href="{% url 'remove from cart' item.pk %}">
+                            <a href="{% url 'remove from cart' item.book.pk %}">
                                 <img id="bag-image" src="{% static 'images/icons8-cancel-50.png' %}" alt="shopping-bag">
                             </a>
                         </td>
