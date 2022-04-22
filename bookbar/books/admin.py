@@ -9,5 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Book)
-class CategoryAdmin(admin.ModelAdmin):
+class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'quantity', 'price', 'category')
+    list_filter = ('category', 'author')
+    ordering = ('author', 'title')

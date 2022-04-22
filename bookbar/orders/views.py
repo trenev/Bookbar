@@ -56,7 +56,7 @@ class FinishOrderView(mixins.LoginRequiredMixin, views.View):
 
         messages.success(request, 'Your order has been finished successfully.')
         return redirect('index')
-    
+
 
 @login_required
 def add_to_cart(request, pk):

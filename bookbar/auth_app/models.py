@@ -14,6 +14,10 @@ class AppUser(auth_models.AbstractBaseUser, auth_models.PermissionsMixin, SoftDe
         default=False,
     )
 
+    date_joined = models.DateTimeField(
+        auto_now_add=True,
+    )
+
     USERNAME_FIELD = 'email'
 
     objects = AppUsersManager()
