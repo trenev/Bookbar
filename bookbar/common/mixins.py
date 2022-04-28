@@ -15,7 +15,7 @@ class BootstrapFormControlMixin:
             field.widget.attrs['class'] += 'form-control'
 
 
-class BookAccessMixin(mixins.PermissionRequiredMixin):
+class UserPermissionMixin(mixins.PermissionRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission():
             return render(request, 'common/404.html')

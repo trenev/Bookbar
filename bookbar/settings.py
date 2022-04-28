@@ -3,8 +3,7 @@ from pathlib import Path
 from django.contrib.messages import constants as messages
 import cloudinary
 
-from bookbar.common.utils import is_production
-
+from bookbar.common.utils import is_production, is_test
 
 MESSAGE_TAGS = {
         messages.DEBUG: 'alert-secondary',
@@ -135,6 +134,8 @@ LOGGING_LEVEL = 'DEBUG'
 
 if is_production():
     LOGGING_LEVEL = 'INFO'
+elif is_test():
+    LOGGING_LEVEL = 'CRITICAL'
 
 LOGGING = {
     'version': 1,

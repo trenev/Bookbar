@@ -1,7 +1,7 @@
 from cloudinary import models as cloudinary_models
+from django.core.validators import MinValueValidator
 from django.db import models
 
-from bookbar.common.validators import MaxFileSizeInMBValidator
 from bookbar.common.models import SoftDeletionModel
 
 
@@ -24,7 +24,6 @@ class Book(SoftDeletionModel):
     AUTHOR_MAX_LENGTH = 50
 
     IMAGE_UPLOAD_TO_DIR = 'images/'
-    IMAGE_MAX_SIZE_IN_MB = 1
 
     title = models.CharField(
         max_length=TITLE_MAX_LENGTH,
@@ -38,16 +37,13 @@ class Book(SoftDeletionModel):
 
     cover_image = cloudinary_models.CloudinaryField('image')
 
-    # cover_image = models.ImageField(
-    #     validators=(
-    #         MaxFileSizeInMBValidator(IMAGE_MAX_SIZE_IN_MB),
-    #     ),
-    #     upload_to=IMAGE_UPLOAD_TO_DIR,
-    # )
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(1)],
+    )
 
-    quantity = models.IntegerField()
-
-    price = models.FloatField()
+    price = models.FloatField(
+        validators=[MinValueValidator(0)],
+    )
 
     date_added = models.DateTimeField(
         auto_now_add=True,
