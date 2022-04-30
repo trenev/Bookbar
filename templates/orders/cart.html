@@ -87,7 +87,7 @@
                         {% if not profile.is_complete %}
                             <a class="btn btn disabled" href="javascript:void(0)">Finish Order</a>
                         {% else %}
-                            <a class="btn btn-warning" href="{% url 'finish order' order.pk %}">Finish Order</a>
+                            <a class="btn btn-warning" href="{% url 'finish order' request.user.pk %}">Finish Order</a>
                         {% endif %}
                     </td>
                 </tr>
