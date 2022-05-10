@@ -36,6 +36,11 @@ class BookDetailView(views.DetailView):
     template_name = 'books/book_details.html'
     model = Book
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['annotation'] = self.object.annotation.split('\n')
+        return data
+
 
 class AddBookView(UserPermissionMixin, views.CreateView):
     permission_required = 'books.add_book'

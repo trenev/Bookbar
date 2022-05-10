@@ -36,7 +36,9 @@
                 </div>
                 <h2>Annotation</h2>
                 <div>
-                    <p>{{ object.annotation }}</p>
+                    {% for p in annotation %}
+                        <p>{{ p }}</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
