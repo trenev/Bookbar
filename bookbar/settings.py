@@ -21,7 +21,8 @@ APP_ENVIRONMENT = os.getenv('APP_ENVIRONMENT', 'Development')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(' ')
+#ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(' ')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'django-server-production-d699.up.railway.app']
 
 DJANGO_APPS = (
     'django.contrib.admin',
